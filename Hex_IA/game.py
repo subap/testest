@@ -1,4 +1,9 @@
 import numpy as np
+import random
+
+winningpositions = [[0,1,2],[3,4,5],[6,7,8],
+                    [0,3,6],[1,4,7],[2,5,8],
+                    [0,4,8],[2,4,6]]
 
 class Game:
     def __init__(self):
@@ -6,75 +11,105 @@ class Game:
         self.board = [0,0,0,0,0,0,0,0,0]
         #self.currentplayer = 1      # First to play is 1, second is -1
         self.currentplayer = "cross"      # First to play is cross, second is circle
+        self.legal_players = ["X","O"]
+        
 
-
-    def allowedActions(self):
+    def Reset(self):
+        self.board = [0,0,0,0,0,0,0,0,0]    # Plateau par défaut
+        self.currentplayer = 1
+        
+        
+    def Allowedactions(self):
         allowed = []
         for i in range(len(self.board)):
             if self.board[i] == 0:
                 allowed.append(i)
-
         return allowed
-
-    def winningPositions(self):
-        winningPositions = [[0,1,2],[3,4,5],[6,7,8],
-                           [0,3,6],[1,4,7],[2,5,8],
-                           [0,4,8],[2,4,6]]
-        for vect in winningPositions:     # [3,4,5]
-            s = self.board(vect[0]) + self.board(vect[1]) + self.board(vect[2])
+    
+    
+    def isPositivewinner(self):
+        positivewinner = False
+        for vect in winningpositions:     # [3,4,5]
+            s = self.board[vect[0]] + self.board[vect[1]] + self.board[vect[2]]
             if s == 3:
-                winner = player1
-            elif s == -3:
-                winner = player2
+                positivewinner = True
+        return positivewinner
+     
+    def isNegativewinner(self):
+        negativewinner = False
+        for vect in winningpositions:
+            s = self.board[vect[0]] + self.board[vect[1]] + self.board[vect[2]]
+            if s == -3:
+                negativewinner = True
+        return negativewinner
+            
+    
+    def isGameover(self):
+        gameover = False
+        if self.Allowedactions() == [] or self.isPositivewinner() == True or self.isNegativewinner() == True:
+            gameover = True
+        return gameover
+
+    def nbPlayedmoves(self):
+        return 9 - len(self.Allowedactions())
+
+
+    def Playerturn(self):
+        playerturn = None
+        if self.nbPlayedmoves() % 2 == 0:
+            playerturn = "positive"
+        else:
+            playerturn = "negative"
+        return playerturn
 
 
 
-
-
-    def _player1Win(self):
-        win1 = False
-        if
-
-    def _isgameOver(self):
-        if self.board = []
-
-    def _reset(self):
-        self.board = [0,0,0,0,0,0,0,0,0]
-        self.currentplayer = 1
+def play(game):
+    human = None
+    while human is None:
+        human = input("Select player: {} (cross begins)".format(game.legal_players)).upper()
+        if human not in game.legal_players:
+            print("Invalid option")
+            human = None
 
 
 
-partie1 = Game()   # Création d'une nouvelle partie
-
-board1 = [0, 0, 1,
-          1, 0, 2,
-          1, 0, 2]
-partie1.board = board1
-partie1.board
-partie1.allowedActions()
-
-
-
-
-
-
-
-def actions_permises(board):
-    allowed = []
-    for i in range(len(board)):
-        if board[i] == 0:
-            allowed.append(i)
-
-    return allowed
-
-
-
-bbb = actions_permises(board1)
-
-
-
-
-class Game:
-
+class RandomBot:
     def __init__(self):
-        self.gameState =
+        """ Returns a random move given game and player """
+        self.memo = {}
+        
+    def action(self, game):
+        return random.choice(game.Allowedactions())
+
+
+
+
+
+
+partie_test = Game()        # Création d'une nouvelle partie
+partie_test_bis = Game()    # Création d'une nouvelle partie
+
+
+board_test = [0, 0, 1,
+              1, 0, -1,
+              1, 0, -1]
+board_test_bis = [1, 0, 1,
+                  1, -1, -1,
+                  1, 0, -1]
+partie_test.board = board_test
+partie_test_bis.board = board_test_bis
+
+
+
+play(partie_test)
+
+
+
+
+bottest = RandomBot()
+bottest.action(partie_test)
+
+
+
+
