@@ -78,6 +78,8 @@ def play(game):
     else:
         turn = 'bot'
     while game.isGameover() == False:
+        print("Actions permises :", game.Allowedactions())
+        Affichage(game.board)
         if turn == "human":
             move = None
             while move == None:
@@ -88,12 +90,31 @@ def play(game):
                 if move.isdigit():
                     move = int(move)
                 if move in game.Allowedactions():
-                    print("vous jouez")
-            turn = 'bot'
-        else:       # if turn = 'bot'
-            print("the computer plays")
-            move = bot.action(game)
+                    print("vous jouez", move)
+                    if human == 'X':
+                        game.board[move] = 1
+                    if human == 'O':
+                        game.board[move] = -1
+                    turn = 'bot'
+        elif turn == 'bot' and game.isGameover() == False:
+            move = bot.action(game)            
+            print("the computer plays", move)
+            if human == 'X':
+                game.board[move] = -1
+            if human == 'O':
+                game.board[move] = 1
             turn = 'human'
+    if game.isPositivewinner() == True:
+        print("Player X wins")
+        Affichage(game.board)
+    elif game.isNegativewinner() == True:
+        print("Player O wins")
+        Affichage(game.board)
+    elif game.Allowedactions() == []:
+        print("Draw")
+        Affichage(game.board)
+    game.Reset()
+            
                 
             
             
@@ -110,56 +131,50 @@ def Numtoletters(board):
 
             
 def Affichage(board):
-    jijiji =   " {} ¦ {} ¦ {} \n" + \
+    board_neutral =   " {} ¦ {} ¦ {} \n" + \
                 "---+---+--- \n" + \
                " {} ¦ {} ¦ {} \n" + \
                 "---+---+--- \n" + \
                " {} ¦ {} ¦ {} \n"
-    board_letters = [i for i in Numtoletters(board)]
-    print(jijiji.format(*board_letters))
+    board_letters = Numtoletters(board)
+    print(board_neutral.format(*board_letters))
     
     
 
 
 class RandomBot:
     def __init__(self):
-        """ Returns a random move given game and player """
-        self.memo = {}
+        """ Returns a random move given game """
         
     def action(self, game):
         return random.choice(game.Allowedactions())
 
 
 
-print("J'ai {} ans".format(18))
-print("J'ai {} ans et {} mois".format(18, "trois"))
+
+
+partie_test = Game()             # Création d'une partie test
+partie_classique = Game()        # Création d'une partie classique
 
 
 
-partie_test = Game()        # Création d'une nouvelle partie
-partie_test_bis = Game()    # Création d'une nouvelle partie
+board_test = [0, 0, 0,
+              0, -1, 0,
+              1, 0, 0]
 
 
-board_test = [0, 0, 1,
-              1, 0, -1,
-              1, 0, -1]
-board_test_bis = [1, 0, 1,
-                  1, -1, -1,
-                  1, 0, -1]
-partie_test.board = board_test
-partie_test_bis.board = board_test_bis
+board_classique = [0, 0, 0,
+                   0, 0, 0,
+                   0, 0, 0]
 
-partie_test.Playerturn()
-
-play(partie_test)
+# partie_test.board = board_test
+partie_classique.board = board_classique
 
 
+# play(partie_test)
+play(partie_classique)
 
 
-bottest = RandomBot()
-bottest.action(partie_test)
-
-Affichage(partie_test)
 
 
 
